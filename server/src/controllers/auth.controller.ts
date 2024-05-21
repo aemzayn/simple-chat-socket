@@ -9,6 +9,7 @@ export const signUp = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Username already exists" });
     }
     const user = await User.create({ name, username, password, role: "user" });
+
     const refreshToken = user.genRefreshToken();
     const accessToken = user.genAccessToken();
     return res.status(201).json({ accessToken, refreshToken, id: user._id });

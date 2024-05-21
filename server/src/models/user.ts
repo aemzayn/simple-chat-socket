@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 export interface IUser {
+  _id: string;
   name: string;
   username: string;
   role: string;
@@ -15,29 +16,58 @@ export interface IUser {
   comparePassword: (inputPassword: string) => boolean;
 }
 
-const userSchema = new Schema<IUser>({
-  name: {
-    type: String,
-    required: true,
+const userSchema = new Schema<IUser>(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    role: {
+      type: String,
+      enum: ["admin", "user"],
+      default: "user",
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    secret: String,
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
   },
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  role: {
-    type: String,
-    enum: ["admin", "user"],
-    default: "user",
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  secret: String,
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+  {
+    methods: {
+      genAccessToken: function () {
+        return jwt.sign(
+          {
+            _id: this._id,
+            role: this.role,
+          },
+          this.secret,
+          { expiresIn: "1d" }
+        );
+      },
+      genRefreshToken: function () {
+        return jwt.sign(
+          {
+            _id: this._id,
+            role: this.role,
+          },
+          this.secret,
+          { expiresIn: "7d" }
+        );
+      },
+      comparePassword: function (inputPassword: string) {
+        return bcrypt.compareSync(inputPassword, this.password);
+      },
+    },
+  }
+);
 
 userSchema.pre("save", function (next) {
   const secret = bcrypt.genSaltSync(10);
@@ -55,34 +85,6 @@ userSchema.pre("save", function (next) {
   }
   next();
 });
-
-// generate access token
-userSchema.methods.genAccessToken = function () {
-  return jwt.sign(
-    {
-      _id: this._id,
-      role: this.role,
-    },
-    this.secret,
-    { expiresIn: "1d" }
-  );
-};
-
-// generate refresh token
-userSchema.methods.genRefreshToken = function () {
-  return jwt.sign(
-    {
-      _id: this._id,
-      role: this.role,
-    },
-    this.secret,
-    { expiresIn: "7d" }
-  );
-};
-
-userSchema.methods.comparePassword = function (inputPassword: string) {
-  return bcrypt.compareSync(inputPassword, this.password);
-};
 
 const User = mongoose.model("User", userSchema);
 
