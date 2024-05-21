@@ -1,26 +1,39 @@
 import { Request, Response } from "express";
 import Group from "../models/group";
+import { makeSlug, randString } from "../utils/string-utils";
 
 export const createGroup = async (req: Request, res: Response) => {
   try {
     const userId = res.locals.userId;
 
-    const { name, slug, isPrivate, inviteCode } = req.body;
+    const { name, isPrivate } = req.body;
+    let { slug, inviteCode } = req.body;
+    if (!slug) {
+      slug = makeSlug(name);
+    }
+
+    if (!inviteCode) {
+      inviteCode = randString(6);
+    }
+
     const group = await Group.create({
       name,
       slug,
       isPrivate,
       inviteCode,
       createdBy: userId,
+      users: [{ _id: userId }],
+      admins: [{ _id: userId }],
     });
 
     return res.status(201).json({ group });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Server error" });
   }
 };
 
-export const getUserGroups = async (req: Request, res: Response) => {
+export const getMyGroups = async (req: Request, res: Response) => {
   try {
     const userId = res.locals.userId;
     const groups = await Group.find({ users: userId });

@@ -35,6 +35,9 @@ importers:
       nodemon:
         specifier: ^3.1.0
         version: 3.1.0
+      randomized-string:
+        specifier: ^2.0.1
+        version: 2.0.1
       slugify:
         specifier: ^1.6.6
         version: 1.6.6
@@ -736,6 +739,10 @@ packages:
   qs@6.11.0:
     resolution: {integrity: sha512-MvjoMCJwEarSbUYk5O+nmoSzSutSsTwF85zcHPQ9OrlFoZOYIjaqBAJIqIXjptyD5vThxGq52Xu/MaJzRkIk4Q==}
     engines: {node: '>=0.6'}
+
+  randomized-string@2.0.1:
+    resolution: {integrity: sha512-pO1z/2gf/kA7ffsVdVySElIeSeeAVBIj1x35OJcwpOvxfsFnKTow+g6qJdjQGl90PMC6GE9G8eOFk5XFVJgrFA==}
+    hasBin: true
 
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
@@ -1668,6 +1675,8 @@ snapshots:
   qs@6.11.0:
     dependencies:
       side-channel: 1.0.6
+
+  randomized-string@2.0.1: {}
 
   range-parser@1.2.1: {}
 

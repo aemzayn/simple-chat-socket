@@ -8,9 +8,7 @@ export const signUp = async (req: Request, res: Response) => {
     const { name, email, password } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: "Username is already being used" });
+      return res.status(400).json({ message: "Email is already being used" });
     }
     const user = await User.create({ name, email, password, role: "user" });
 

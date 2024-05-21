@@ -40,6 +40,6 @@ const groupSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 });
 
-const Message = model("Group", groupSchema);
+const Group = model("Group", groupSchema);
 
-export default Message;
+export default Group;
