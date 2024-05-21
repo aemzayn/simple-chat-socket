@@ -6,6 +6,12 @@ import apiRoutes from "./routes";
 
 dotenv.config();
 
+declare namespace Express {
+  interface Request {
+    user: any;
+  }
+}
+
 const app = express();
 
 app.use(express.json());

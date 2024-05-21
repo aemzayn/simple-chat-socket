@@ -74,8 +74,6 @@ userSchema.pre("save", function (next) {
   const hashedPassword = bcrypt.hashSync(this.password, secret);
   this.password = hashedPassword;
   this.secret = secret;
-  console.log(secret);
-
   this.updatedAt = new Date();
   if (!this.role) {
     this.role = "user";
