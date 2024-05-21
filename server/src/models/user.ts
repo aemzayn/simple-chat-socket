@@ -12,6 +12,7 @@ export interface IUser {
   updatedAt: Date;
   genAccessToken: () => string;
   genRefreshToken: () => string;
+  comparePassword: (inputPassword: string) => boolean;
 }
 
 const userSchema = new Schema<IUser>({
@@ -33,10 +34,7 @@ const userSchema = new Schema<IUser>({
     type: String,
     required: true,
   },
-  secret: {
-    type: String,
-    required: true,
-  },
+  secret: String,
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
@@ -46,7 +44,15 @@ userSchema.pre("save", function (next) {
   const hashedPassword = bcrypt.hashSync(this.password, secret);
   this.password = hashedPassword;
   this.secret = secret;
+  console.log(secret);
+
   this.updatedAt = new Date();
+  if (!this.role) {
+    this.role = "user";
+  }
+  if (!this.createdAt) {
+    this.createdAt = new Date();
+  }
   next();
 });
 
@@ -62,7 +68,7 @@ userSchema.methods.genAccessToken = function () {
   );
 };
 
-// // generate refresh token
+// generate refresh token
 userSchema.methods.genRefreshToken = function () {
   return jwt.sign(
     {
@@ -72,6 +78,10 @@ userSchema.methods.genRefreshToken = function () {
     this.secret,
     { expiresIn: "7d" }
   );
+};
+
+userSchema.methods.comparePassword = function (inputPassword: string) {
+  return bcrypt.compareSync(inputPassword, this.password);
 };
 
 const User = mongoose.model("User", userSchema);
