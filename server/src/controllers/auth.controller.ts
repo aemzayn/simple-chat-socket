@@ -12,6 +12,7 @@ export const signUp = async (req: Request, res: Response) => {
 
     const refreshToken = user.genRefreshToken();
     const accessToken = user.genAccessToken();
+
     return res.status(201).json({ accessToken, refreshToken, id: user._id });
   } catch (error) {
     console.error(error);
@@ -24,16 +25,12 @@ export const signIn = async (req: Request, res: Response) => {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
     if (!user) {
-      return res
-        .status(400)
-        .json({ data: null, message: "Invalid username or password" });
+      return res.status(400).json({ message: "Invalid username or password" });
     }
 
     const isValid = user.comparePassword(password);
     if (!isValid) {
-      return res
-        .status(400)
-        .json({ data: null, message: "Invalid username or password" });
+      return res.status(400).json({ message: "Invalid username or password" });
     }
 
     const refreshToken = user.genRefreshToken();
