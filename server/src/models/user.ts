@@ -1,11 +1,11 @@
 import mongoose, { Schema } from "mongoose";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { TokenService } from "../services/token-services";
 
 export interface IUser {
   _id: string;
   name: string;
-  username: string;
+  email: string;
   role: string;
   password: string;
   secret: string;
@@ -22,7 +22,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
     },
-    username: {
+    email: {
       type: String,
       required: true,
       unique: true,
@@ -43,24 +43,10 @@ const userSchema = new Schema<IUser>(
   {
     methods: {
       genAccessToken: function () {
-        return jwt.sign(
-          {
-            _id: this._id,
-            role: this.role,
-          },
-          this.secret,
-          { expiresIn: "1d" }
-        );
+        return TokenService.generateAccessToken(this);
       },
       genRefreshToken: function () {
-        return jwt.sign(
-          {
-            _id: this._id,
-            role: this.role,
-          },
-          this.secret,
-          { expiresIn: "7d" }
-        );
+        return TokenService.generateRefreshToken(this);
       },
       comparePassword: function (inputPassword: string) {
         return bcrypt.compareSync(inputPassword, this.password);

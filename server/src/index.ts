@@ -1,24 +1,23 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import morgan from "morgan";
 import apiRoutes from "./routes";
+import { authMiddleware } from "./middlewares/auth-middleware";
 
 dotenv.config();
-
-declare namespace Express {
-  interface Request {
-    user: any;
-  }
-}
 
 const app = express();
 
 app.use(express.json());
 app.use(morgan("dev"));
 
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
+});
+
+app.get("/admin", authMiddleware, (req: Request, res: Response) => {
+  res.send("Admin Dashboard");
 });
 
 app.use("/api", apiRoutes);
@@ -41,5 +40,5 @@ app.listen(PORT, async () => {
     }
   }
 
-  console.log("Server is running on http://localhost:8080");
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

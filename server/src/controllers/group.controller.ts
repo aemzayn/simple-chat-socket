@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import Group from "../models/group";
-import { AuthRequest } from "../interfaces/auth-request";
 
-export const createGroup = async (req: AuthRequest, res: Response) => {
+export const createGroup = async (req: Request, res: Response) => {
   try {
-    const userId = req.user._id;
+    const userId = res.locals.userId;
 
     const { name, slug, isPrivate, inviteCode } = req.body;
     const group = await Group.create({
@@ -21,9 +20,9 @@ export const createGroup = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const getUserGroups = async (req: AuthRequest, res: Response) => {
+export const getUserGroups = async (req: Request, res: Response) => {
   try {
-    const userId = req.user._id;
+    const userId = res.locals.userId;
     const groups = await Group.find({ users: userId });
 
     return res.status(200).json({ groups });
@@ -32,9 +31,9 @@ export const getUserGroups = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const joinGroup = async (req: AuthRequest, res: Response) => {
+export const joinGroup = async (req: Request, res: Response) => {
   try {
-    const userId = req.user._id;
+    const userId = res.locals.userId;
     const { inviteCode } = req.body;
     const group = await Group.findOne({ inviteCode });
     if (!group) {
@@ -55,9 +54,9 @@ export const joinGroup = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const deleteGroup = async (req: AuthRequest, res: Response) => {
+export const deleteGroup = async (req: Request, res: Response) => {
   try {
-    const userId = req.user._id;
+    const userId = res.locals.userId;
     const { groupId } = req.params;
     const group = await Group.findOne({ _id: groupId });
 
