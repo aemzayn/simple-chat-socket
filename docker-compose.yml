@@ -10,3 +10,17 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=secret
+  server:
+    build: ./server
+    restart: always
+    ports:
+      - 8080:8080
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+    environment:
+      - PORT=8080
+      - MONGO_URI=mongodb://172.0.0.1:27017/simple-chat
+      - JWT_REFRESH_TOKEN_SECRET=secret
+      - JWT_ACCESS_TOKEN_SECRET=secret
