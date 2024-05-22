@@ -1,26 +1,20 @@
 version: "3"
+
 services:
-  mongodb:
-    image: mongo
-    restart: always
-    ports:
-      - 27017:27017
+  db:
+    image: mongo:latest
     volumes:
-      - ./data:/data/mongodb
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=secret
+      - ./data:/data/db
+
   server:
     build: ./server
-    restart: always
     ports:
-      - 8080:8080
-    links:
-      - mongodb
-    depends_on:
-      - mongodb
+      - "8080:8080"
     environment:
       - PORT=8080
-      - MONGO_URI=mongodb://172.0.0.1:27017/simple-chat
+      - MONGO_URI=mongodb://db:27017/simple-chat
       - JWT_REFRESH_TOKEN_SECRET=secret
       - JWT_ACCESS_TOKEN_SECRET=secret
+
+volumes:
+  data:

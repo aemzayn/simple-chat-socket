@@ -23,6 +23,7 @@ app.get("/admin", authMiddleware, (req: Request, res: Response) => {
 app.use("/api", apiRoutes);
 
 const PORT = process.env.PORT || 8080;
+
 app.listen(PORT, async () => {
   // connect to mongodb
   const mongoUri = process.env.MONGO_URI;
