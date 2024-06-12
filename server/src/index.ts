@@ -4,6 +4,8 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import apiRoutes from "./routes";
 import { authMiddleware } from "./middlewares/auth-middleware";
+import http from "http";
+import initSocketServer from "./socket-server";
 
 dotenv.config();
 
@@ -24,7 +26,11 @@ app.use("/api", apiRoutes);
 
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, async () => {
+const server = http.createServer(app);
+
+initSocketServer(server);
+
+server.listen(PORT, async () => {
   // connect to mongodb
   const mongoUri = process.env.MONGO_URI;
   if (!mongoUri) {

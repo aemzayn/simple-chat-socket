@@ -1,0 +1,101 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  padding: 0.5rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  border: 1px solid red;
+  width: 100%;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.form button {
+  align-self: flex-end;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 0.5rem 1.5rem;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border: 1px solid #dddddd;
+  border-radius: 0.5rem;
+  width: 49%;
+  position: relative;
+  background-color: #f9f9f9;
+}
+
+/* Add pointer to other people message buble */
+.message:not(.message.message--same-user-prev):not(.message--me)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -0.5rem;
+  width: 1rem;
+  height: 2rem;
+  background: #dddddd;
+  z-index: -1;
+  clip-path: polygon(0 45%, 100% 0, 100% 100%, 0 55%);
+}
+
+/* Add pointer to my message buble */
+.message.message--me:not(.message.message--same-user-prev)::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -0.5rem;
+  width: 1rem;
+  height: 2rem;
+  background: #dddddd;
+  z-index: -1;
+  clip-path: polygon(0 45%, 100% 0, 100% 100%, 0 55%);
+  rotate: 180deg;
+}
+
+.message.message--same-user-next {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.message.message--same-user-prev {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-top: none;
+}
+
+.message.message--me {
+  align-self: flex-end;
+  background-color: #f0f0f0;
+}
+
+.message p.message-sender {
+  color: violet;
+  font-weight: bold;
+}
+
+.message p.message-time {
+  align-self: flex-end;
+  color: #666;
+}
